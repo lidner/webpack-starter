@@ -2,11 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 	.BundleAnalyzerPlugin;
+const { VueLoaderPlugin } = require('vue-loader');
 
 module.exports = {
-	mode: 'development',
+	mode: 'production',
 	entry: {
-		bundle: path.resolve(__dirname, 'src/index.js'),
+		bundle: path.resolve(__dirname, 'src/main.js'),
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -14,7 +15,6 @@ module.exports = {
 		clean: true,
 		assetModuleFilename: '[name][ext]',
 	},
-	devtool: 'source-map',
 	devServer: {
 		static: {
 			directory: path.resolve(__dirname, 'dist'),
@@ -28,8 +28,8 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.scss$/,
-				use: ['style-loader', 'css-loader', 'sass-loader'],
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader'],
 			},
 			{
 				test: /\.js$/,
@@ -42,17 +42,27 @@ module.exports = {
 				},
 			},
 			{
+				test: /\.vue$/,
+				loader: 'vue-loader',
+			},
+			{
 				test: /\.(png|svg|jpg|jpeg|gif)$/i,
 				type: 'asset/resource',
 			},
 		],
 	},
+	resolve: {
+		alias: {
+			vue$: 'vue/dist/vue.esm.js',
+		},
+	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			title: 'Webpack App',
 			filename: 'index.html',
-			template: 'src/template.html',
+			template: 'src/index.html',
 		}),
 		new BundleAnalyzerPlugin(),
+		new VueLoaderPlugin(),
 	],
 };
