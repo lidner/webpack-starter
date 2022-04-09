@@ -54,7 +54,6 @@ export default {
 		return {
 			message: 'hello skiz',
 			newTodo: '',
-			idForTodo: 1,
 			title: '',
 		};
 	},
@@ -73,7 +72,8 @@ export default {
 			this.idForTodo++;
 		},
 		changeTitle() {
-			document.title = this.title;
+			// document.title = this.title;
+			this.$store.dispatch('updateTitle', this.title);
 		},
 	},
 	components: {
@@ -85,6 +85,14 @@ export default {
 	},
 	computed: {
 		...mapGetters(['todosFiltered', 'anyRemaining']),
+		idForTodo: {
+			get() {
+				return this.$store.state.idForTodo;
+			},
+			set(newId) {
+				return newId;
+			},
+		},
 	},
 };
 </script>

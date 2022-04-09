@@ -9,3 +9,5 @@
  * (c) 2021 Evan You
  * @license MIT
  */
+
+/*! (c) 2020 Andrea Giammarchi */

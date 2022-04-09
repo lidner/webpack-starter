@@ -1,5 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import VuexPersist from 'vuex-persist';
+
+const vuexLocalStorage = new VuexPersist({
+	key: 'vuex',
+	storage: window.localStorage,
+});
 
 Vue.use(Vuex);
 
@@ -7,6 +13,8 @@ const store = new Vuex.Store({
 	state: {
 		filter: 'all',
 		todos: [],
+		title: document.title || window.localStorage.getItem('vuex.title'),
+		idForTodo: 1,
 	},
 	getters: {
 		todosFiltered(state) {
@@ -28,6 +36,9 @@ const store = new Vuex.Store({
 		},
 		showClearCompletedButton(state) {
 			return state.todos.filter(todo => todo.completed).length > 0;
+		},
+		idForTodo(state) {
+			return state.idForTodo;
 		},
 	},
 	mutations: {
@@ -61,10 +72,18 @@ const store = new Vuex.Store({
 		clearCompleted(state) {
 			state.todos = state.todos.filter(todo => !todo.completed);
 		},
+		updateTitle(state, title) {
+			document.title = title;
+			state.title = title;
+		},
+		incrementTodoId(state) {
+			state.idForTodo++;
+		},
 	},
 	actions: {
 		addTodo(context, todo) {
 			context.commit('addTodo', todo);
+			context.commit('incrementTodoId');
 		},
 		deleteTodo(context, id) {
 			context.commit('deleteTodo', id);
@@ -81,7 +100,11 @@ const store = new Vuex.Store({
 		clearCompleted(context) {
 			context.commit('clearCompleted');
 		},
+		updateTitle(context, title) {
+			context.commit('updateTitle', title);
+		},
 	},
+	plugins: [vuexLocalStorage.plugin],
 });
 
 export default store;
