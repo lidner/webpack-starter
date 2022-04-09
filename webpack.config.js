@@ -3,9 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 	.BundleAnalyzerPlugin;
 const { VueLoaderPlugin } = require('vue-loader');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
-	mode: 'production',
+	mode: 'development',
 	entry: {
 		bundle: path.resolve(__dirname, 'src/main.js'),
 	},
@@ -64,5 +65,6 @@ module.exports = {
 		}),
 		new BundleAnalyzerPlugin(),
 		new VueLoaderPlugin(),
+		new ESLintPlugin(),
 	],
 };
