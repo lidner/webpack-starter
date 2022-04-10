@@ -74,6 +74,7 @@ export default {
 		changeTitle() {
 			// document.title = this.title;
 			this.$store.dispatch('updateTitle', this.title);
+			this.title = '';
 		},
 	},
 	components: {
