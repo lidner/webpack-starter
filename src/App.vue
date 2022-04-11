@@ -14,9 +14,19 @@
 				placeholder="Пиши уже задачи, чтобы не забывать их"
 				v-model="newTodo"
 				@keyup.enter="addTodo"
-				@keyup="searchTask"
+				@input="searchTask"
 			/>
-			<!-- <div class="container search-block"> -->
+			<div
+				class="searchedTodos"
+				v-show="openSearchBox"
+				v-if="filteredTasks"
+			>
+				<ul>
+					<li v-for="todo in filteredTasks" :key="todo.id">
+						{{ todo.title }}
+					</li>
+				</ul>
+			</div>
 			<div>
 				<select
 					class="todo-input"
@@ -29,14 +39,6 @@
 					<option value="completed">Выполненные</option>
 				</select>
 			</div>
-			<!-- <input
-				type="text"
-				class="todo-input"
-				placeholder="Поиск задач"
-				v-model="search"
-				@keyup="searchTask"
-			/> -->
-			<!-- </div> -->
 			<transition-group
 				name="fade"
 				enter-active-class="animated fadeInUp"
@@ -64,6 +66,7 @@ export default {
 			newTodo: '',
 			title: '',
 			search: '',
+			openSearchBox: true,
 		};
 	},
 	methods: {
@@ -90,16 +93,7 @@ export default {
 		},
 		searchTask(e) {
 			let search = e.target.value;
-			let todos = this.todosFiltered;
-
-			if (e.target.value.trim() == '') {
-				console.log('empty');
-			} else {
-				this.$store.dispatch('searchTask', search);
-			}
-			// this.filteredTasks = todos.filter(item => {
-			// 	return item.title.toLowerCase().includes(search.toLowerCase());
-			// });
+			this.$store.dispatch('searchTask', search);
 		},
 	},
 	components: {
@@ -208,6 +202,10 @@ export default {
 	outline: none;
 }
 
+.check {
+	margin-top: 20px;
+}
+
 .completed {
 	text-decoration: line-through;
 	color: grey;
@@ -226,5 +224,36 @@ export default {
 .fade-enter,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.searchedTodos ul {
+	list-style-type: none;
+	text-align: center;
+	margin: 0 0 10px 0;
+}
+
+@media (max-width: 1024px) {
+	.todo-item,
+	.todo-item-edit {
+		font-size: 18px;
+	}
+}
+
+@media (max-width: 360px) {
+	.todo-input {
+		width: 100%;
+		padding: 10px 18px;
+		font-size: 14px;
+	}
+
+	.todo-item,
+	.todo-item-edit,
+	.searchedTodos {
+		font-size: 14px;
+	}
+
+	.check {
+		margin-top: 15px;
+	}
 }
 </style>

@@ -10,6 +10,7 @@
 			<div
 				v-if="!editing"
 				@dblclick="editTodo"
+				v-touch="editTodo"
 				class="todo-item-label"
 				:class="{ completed: completed }"
 			>
@@ -99,8 +100,4 @@ export default {
 };
 </script>
 
-<style>
-.check {
-	margin-top: 20px;
-}
-</style>
+<style></style>

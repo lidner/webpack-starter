@@ -35,9 +35,6 @@ const store = new Vuex.Store({
 		anyRemaining(state, getters) {
 			return getters.remaining != 0;
 		},
-		showClearCompletedButton(state) {
-			return state.todos.filter(todo => todo.completed).length > 0;
-		},
 		idForTodo(state) {
 			return state.idForTodo;
 		},
@@ -78,14 +75,8 @@ const store = new Vuex.Store({
 				editing: todo.editing,
 			});
 		},
-		// checkAll(state, checked) {
-		// 	state.todos.forEach(todo => (todo.completed = checked));
-		// },
 		updateFilter(state, filter) {
 			state.filter = filter;
-		},
-		clearCompleted(state) {
-			state.todos = state.todos.filter(todo => !todo.completed);
 		},
 		updateTitle(state, title) {
 			document.title = title;
@@ -100,10 +91,6 @@ const store = new Vuex.Store({
 					.toLowerCase()
 					.includes(searchWord.toLowerCase());
 			});
-
-			// this.filteredTasks = todos.filter(item => {
-			// 	return item.title.toLowerCase().includes(search.toLowerCase());
-			// });
 		},
 	},
 	actions: {
@@ -117,14 +104,8 @@ const store = new Vuex.Store({
 		updateTodo(context, todo) {
 			context.commit('updateTodo', todo);
 		},
-		// checkAll(context, checked) {
-		// 	context.commit('checkAll', checked);
-		// },
 		updateFilter(context, filter) {
 			context.commit('updateFilter', filter);
-		},
-		clearCompleted(context) {
-			context.commit('clearCompleted');
 		},
 		updateTitle(context, title) {
 			context.commit('updateTitle', title);

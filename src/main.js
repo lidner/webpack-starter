@@ -2,8 +2,10 @@ import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
 import VueRouter from 'vue-router';
+import Vue2TouchEvents from 'vue2-touch-events';
 
 Vue.use(VueRouter);
+Vue.use(Vue2TouchEvents);
 
 const router = new VueRouter({});
 
