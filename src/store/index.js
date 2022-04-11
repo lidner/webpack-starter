@@ -15,6 +15,7 @@ const store = new Vuex.Store({
 		todos: [],
 		title: document.title || window.localStorage.getItem('vuex.title'),
 		idForTodo: 1,
+		filteredTasks: [],
 	},
 	getters: {
 		todosFiltered(state) {
@@ -40,6 +41,20 @@ const store = new Vuex.Store({
 		idForTodo(state) {
 			return state.idForTodo;
 		},
+		filteredTasks(state) {
+			if (state.filter == 'all') {
+				return state.filteredTasks;
+			} else if (state.filter == 'active') {
+				return state.filteredTasks.filter(todo => !todo.completed);
+			} else if (state.filter == 'completed') {
+				return state.filteredTasks.filter(todo => todo.completed);
+			} else {
+				return state.filteredTasks;
+			}
+		},
+		filter(state) {
+			return state.filter;
+		},
 	},
 	mutations: {
 		addTodo(state, todo) {
@@ -63,9 +78,9 @@ const store = new Vuex.Store({
 				editing: todo.editing,
 			});
 		},
-		checkAll(state, checked) {
-			state.todos.forEach(todo => (todo.completed = checked));
-		},
+		// checkAll(state, checked) {
+		// 	state.todos.forEach(todo => (todo.completed = checked));
+		// },
 		updateFilter(state, filter) {
 			state.filter = filter;
 		},
@@ -79,6 +94,17 @@ const store = new Vuex.Store({
 		incrementTodoId(state) {
 			state.idForTodo++;
 		},
+		searchTask(state, searchWord) {
+			state.filteredTasks = state.todos.filter(item => {
+				return item.title
+					.toLowerCase()
+					.includes(searchWord.toLowerCase());
+			});
+
+			// this.filteredTasks = todos.filter(item => {
+			// 	return item.title.toLowerCase().includes(search.toLowerCase());
+			// });
+		},
 	},
 	actions: {
 		addTodo(context, todo) {
@@ -91,9 +117,9 @@ const store = new Vuex.Store({
 		updateTodo(context, todo) {
 			context.commit('updateTodo', todo);
 		},
-		checkAll(context, checked) {
-			context.commit('checkAll', checked);
-		},
+		// checkAll(context, checked) {
+		// 	context.commit('checkAll', checked);
+		// },
 		updateFilter(context, filter) {
 			context.commit('updateFilter', filter);
 		},
@@ -102,6 +128,9 @@ const store = new Vuex.Store({
 		},
 		updateTitle(context, title) {
 			context.commit('updateTitle', title);
+		},
+		searchTask(context, searchWord) {
+			context.commit('searchTask', searchWord);
 		},
 	},
 	plugins: [vuexLocalStorage.plugin],

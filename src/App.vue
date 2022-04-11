@@ -14,7 +14,29 @@
 				placeholder="Пиши уже задачи, чтобы не забывать их"
 				v-model="newTodo"
 				@keyup.enter="addTodo"
+				@keyup="searchTask"
 			/>
+			<!-- <div class="container search-block"> -->
+			<div>
+				<select
+					class="todo-input"
+					name="filter"
+					@change="changeFilter"
+					v-model="filter"
+				>
+					<option value="all">Все</option>
+					<option value="active">Активные</option>
+					<option value="completed">Выполненные</option>
+				</select>
+			</div>
+			<!-- <input
+				type="text"
+				class="todo-input"
+				placeholder="Поиск задач"
+				v-model="search"
+				@keyup="searchTask"
+			/> -->
+			<!-- </div> -->
 			<transition-group
 				name="fade"
 				enter-active-class="animated fadeInUp"
@@ -28,26 +50,12 @@
 				></todo-item>
 			</transition-group>
 		</div>
-		<div class="extra-container">
-			<todo-check-all></todo-check-all>
-			<todo-items-remaining></todo-items-remaining>
-		</div>
-		<div class="extra-container">
-			<todo-filtered></todo-filtered>
-			<transition name="fade">
-				<todo-clear-completed></todo-clear-completed>
-			</transition>
-		</div>
 	</div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import TodoItem from './components/TodoItem.vue';
-import TodoCheckAll from './components/TodoCheckAll.vue';
-import TodoItemsRemaining from './components/TodoItemsRemaining.vue';
-import TodoFiltered from './components/TodoFiltered.vue';
-import TodoClearCompleted from './components/TodoClearCompleted.vue';
 
 export default {
 	data() {
@@ -55,6 +63,7 @@ export default {
 			message: 'hello skiz',
 			newTodo: '',
 			title: '',
+			search: '',
 		};
 	},
 	methods: {
@@ -72,20 +81,37 @@ export default {
 			this.idForTodo++;
 		},
 		changeTitle() {
-			// document.title = this.title;
 			this.$store.dispatch('updateTitle', this.title);
 			this.title = '';
+		},
+		changeFilter(event) {
+			let filter = event.target.value;
+			this.$store.dispatch('updateFilter', filter);
+		},
+		searchTask(e) {
+			let search = e.target.value;
+			let todos = this.todosFiltered;
+
+			if (e.target.value.trim() == '') {
+				console.log('empty');
+			} else {
+				this.$store.dispatch('searchTask', search);
+			}
+			// this.filteredTasks = todos.filter(item => {
+			// 	return item.title.toLowerCase().includes(search.toLowerCase());
+			// });
 		},
 	},
 	components: {
 		TodoItem,
-		TodoCheckAll,
-		TodoItemsRemaining,
-		TodoFiltered,
-		TodoClearCompleted,
 	},
 	computed: {
-		...mapGetters(['todosFiltered', 'anyRemaining']),
+		...mapGetters([
+			'todosFiltered',
+			'anyRemaining',
+			'filteredTasks',
+			'filter',
+		]),
 		idForTodo: {
 			get() {
 				return this.$store.state.idForTodo;
@@ -94,12 +120,21 @@ export default {
 				return newId;
 			},
 		},
+		filter: {
+			get() {
+				return this.$store.state.filter;
+			},
+			set(newFilter) {
+				return newFilter;
+			},
+		},
 	},
 };
 </script>
 
 <style>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 * {
 	box-sizing: border-box;
@@ -108,6 +143,7 @@ export default {
 }
 
 #app {
+	font-family: 'Roboto', sans-serif;
 }
 
 .container {
@@ -135,9 +171,8 @@ export default {
 	animation-duration: 0.3s;
 	font-size: 24px;
 	color: #2c3e50;
-	widows: 100%;
+	width: 100%;
 	border: 1px solic #ccc;
-	font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 
 .remove-item {
@@ -151,6 +186,7 @@ export default {
 
 .todo-item-left {
 	display: flex;
+	width: 100%;
 }
 
 .todo-item-label {
@@ -163,10 +199,9 @@ export default {
 	font-size: 24px;
 	color: #2c3e50;
 	margin-left: 12px;
-	widows: 100%;
+	width: 100%;
 	padding: 10px;
 	border: 1px solic #ccc;
-	font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 
 .todo-item-edit:focus {
@@ -178,35 +213,10 @@ export default {
 	color: grey;
 }
 
-.extra-container {
+.search-block {
 	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	font-size: 16px;
-	border-top: 1px solid lightgrey;
-	padding-top: 14px;
-	margin-bottom: 14px;
-	width: min(100% - 2rem, 600px);
-	margin-inline: auto;
-	padding-top: 3rem;
-}
-button {
-	font-size: 14px;
-	background-color: white;
-	appearance: none;
-	padding: 4px;
-}
-
-button:hover {
-	background: lightgreen;
-}
-
-button:focus {
-	outline: none;
-}
-
-.active {
-	background: lightgreen;
+	gap: 2rem;
+	justify-content: center;
 }
 
 .fade-enter-active,
